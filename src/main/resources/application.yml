@@ -16,7 +16,7 @@ spring:
 
     # for IntelliJ IDEA
     username : root # admin # root
-    password :      # A$dmin123
+    password : root    # A$dmin123
 
     # for AWS
     # username :  admin # root
