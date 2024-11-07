@@ -22,13 +22,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @Slf4j
+
 public class VetControllerTest {
 
     private static final ObjectMapper om = new ObjectMapper();
 
     @Autowired
     private MockMvc mockMvc;
-
     /**
      * @throws Exception
      */
@@ -79,4 +79,34 @@ public class VetControllerTest {
                 /*.andDo(print())*/
                 .andExpect(status().isOk());
     }
+
+    /**
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testDeleteVet() throws Exception {
+
+        String FIRST_NAME = "Maximo";
+        String LAST_NAME = "Ventos";
+
+        VetTO newVetTO = new VetTO();
+        newVetTO.setFirstName(FIRST_NAME);
+        newVetTO.setLastName(LAST_NAME);
+
+        ResultActions mvcActions = mockMvc.perform(post("/vets")
+                        .content(om.writeValueAsString(newVetTO))
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        String response = mvcActions.andReturn().getResponse().getContentAsString();
+
+        Integer id = JsonPath.parse(response).read("$.id");
+
+        mockMvc.perform(delete("/vets/" + id ))
+                .andExpect(status().isOk());
+    }
+
+
 }
