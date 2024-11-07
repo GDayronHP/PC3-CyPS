@@ -29,6 +29,49 @@ public class VetControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    /**
+     *
+     * @throws Exception
+     *
+     */
+    @Test
+    public void testFindVetOK() throws Exception {
+
+        String FIRST_NAME = "James";
+
+        mockMvc.perform(get("/vets/1"))  // Object must be BASIL
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.firstName", is(FIRST_NAME)));
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void testCreateVet() throws Exception {
+
+        String FIRST_NAME = "Jhon Kenedy";
+        String LAST_NAME = "Herrera";
+
+        VetTO newVetTO = new VetTO();
+        newVetTO.setFirstName(FIRST_NAME);
+        newVetTO.setLastName(LAST_NAME);
+
+        mockMvc.perform(post("/vets")
+                        .content(om.writeValueAsString(newVetTO))
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                //.andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.firstName", is(FIRST_NAME)))
+                .andExpect(jsonPath("$.lastName", is(LAST_NAME)));
+
+    }
+
     /**
      * @throws Exception
      */
